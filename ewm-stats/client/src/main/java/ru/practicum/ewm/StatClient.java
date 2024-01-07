@@ -1,7 +1,5 @@
 package ru.practicum.ewm;
 
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -12,7 +10,6 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.dto.HitDto;
 
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class StatClient extends BaseClient {
 
     private static final String API_PREFIX = "/hit";
