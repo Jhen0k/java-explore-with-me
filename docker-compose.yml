@@ -10,7 +10,7 @@ services:
       - stats-db
     environment:
       - EWM_MAIN_URL=http://ewm-service:8080
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:6541/statistic
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statistic
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=pass
 
