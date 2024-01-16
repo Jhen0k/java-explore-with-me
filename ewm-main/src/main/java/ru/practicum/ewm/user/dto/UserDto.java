@@ -29,6 +29,6 @@ public class UserDto {
 
     @NotBlank
     @Size(min = 2, max = 250)
-    @Pattern(regexp = "^\\w+\\s{1,2}\\w+(\\s{1,2}\\w+)?$")
+    //@Pattern(regexp = "^\\w+\\s{1,2}\\w+(\\s{1,2}\\w+)?$")
     String name;
 }

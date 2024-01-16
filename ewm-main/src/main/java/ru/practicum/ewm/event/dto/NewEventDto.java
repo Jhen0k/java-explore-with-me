@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.ewm.event.model.Location;
 
@@ -40,11 +39,11 @@ public class NewEventDto {
     @NotNull
     Location location;
 
-    Boolean paid;
+    Boolean paid = false;
 
-    Integer participantLimit;
+    Integer participantLimit = 0;
 
-    Boolean requestModeration;
+    Boolean requestModeration = true;
 
     @NotNull
     @Size(min = 3, max = 120)
