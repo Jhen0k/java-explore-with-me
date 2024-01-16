@@ -1,4 +1,4 @@
-package ru.practicum.ewm.categories.model;
+package ru.practicum.ewm.category.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

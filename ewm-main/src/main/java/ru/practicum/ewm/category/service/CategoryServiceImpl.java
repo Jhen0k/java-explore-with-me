@@ -1,4 +1,4 @@
-package ru.practicum.ewm.categories.service;
+package ru.practicum.ewm.category.service;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -6,12 +6,12 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.ewm.categories.dto.CategoryDto;
-import ru.practicum.ewm.categories.mapper.CategoryMapper;
-import ru.practicum.ewm.categories.model.Category;
+import ru.practicum.ewm.category.dto.CategoryDto;
+import ru.practicum.ewm.category.mapper.CategoryMapper;
+import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.paginator.Paginator;
-import ru.practicum.ewm.categories.repository.CategoryRepository;
-import ru.practicum.ewm.categories.validation.CategoryValidation;
+import ru.practicum.ewm.category.repository.CategoryRepository;
+import ru.practicum.ewm.category.validation.CategoryValidation;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ru.practicum.ewm.categories;
+package ru.practicum.ewm.category;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.practicum.ewm.categories.dto.CategoryDto;
-import ru.practicum.ewm.categories.service.CategoryService;
+import ru.practicum.ewm.category.dto.CategoryDto;
+import ru.practicum.ewm.category.service.CategoryService;
 
 import java.util.List;
 
