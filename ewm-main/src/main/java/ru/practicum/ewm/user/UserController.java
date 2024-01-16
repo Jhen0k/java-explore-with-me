@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.ewm.event.dto.EventFullDto;
+import ru.practicum.ewm.event.dto.NewEventDto;
+import ru.practicum.ewm.event.service.EventService;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.service.UserService;
 
@@ -21,29 +24,36 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/admin/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
 
     UserService userService;
+    EventService eventService;
 
-    @PostMapping()
+    @PostMapping("/admin/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@Valid @RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
-    @GetMapping
+    @GetMapping("/admin/users")
     public List<UserDto> getUsers(@RequestParam(required = false) Integer ids,
                                   @RequestParam(defaultValue = "0") Integer from,
                                   @RequestParam(defaultValue = "10") Integer size) {
         return userService.getUsers(ids, from, size);
     }
 
-    @DeleteMapping("/{userId}")
+    @DeleteMapping("/admin/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Integer userId) {
         userService.deleteUser(userId);
+    }
+
+    @PostMapping("/users/{userId}/events")
+    @ResponseStatus(HttpStatus.CREATED)
+    public EventFullDto createEvent(@Valid @RequestBody NewEventDto newEventDto,
+                                    @PathVariable Integer userId) {
+        return eventService.createEvent(newEventDto, userId);
     }
 }
