@@ -29,6 +29,6 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     String name;
 }

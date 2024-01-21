@@ -7,6 +7,7 @@ import ru.practicum.ewm.category.mapper.CategoryMapper;
 import ru.practicum.ewm.category.repository.CategoryRepository;
 import ru.practicum.ewm.event.dto.EventFullDto;
 import ru.practicum.ewm.event.dto.NewEventDto;
+import ru.practicum.ewm.event.enums.State;
 import ru.practicum.ewm.event.repository.EventRepository;
 
 @Mapper(componentModel = "spring")
@@ -19,9 +20,12 @@ public abstract class AbstractEventMapper {
     @Autowired
     protected CategoryMapper categoryMapper;
 
+    protected LocationMapper locationMapper;
+
     public EventFullDto toDtoInNewEvent(NewEventDto event) {
         categoryRepository.existsById(event.getCategory());
         CategoryDto categoryDto = categoryMapper.toDto(categoryRepository.findById(event.getCategory()).orElseThrow());
+
 
         return EventFullDto.builder()
                 .annotation(event.getAnnotation())
@@ -32,6 +36,7 @@ public abstract class AbstractEventMapper {
                 .paid(event.getPaid())
                 .participantLimit(event.getParticipantLimit())
                 .requestModeration(event.getRequestModeration())
+                .state(State.PENDING)
                 .title(event.getTitle())
                 .build();
     }

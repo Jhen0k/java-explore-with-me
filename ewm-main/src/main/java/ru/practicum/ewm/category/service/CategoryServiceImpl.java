@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.dto.CategoryDto;
+import ru.practicum.ewm.category.dto.NewCategoryDto;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
 import ru.practicum.ewm.category.model.Category;
 import ru.practicum.ewm.paginator.Paginator;
@@ -26,7 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto createCategory(CategoryDto categoryDto) {
+    public CategoryDto createCategory(NewCategoryDto categoryDto) {
         Category category = categoryMapper.toEntity(categoryDto);
 
         return categoryMapper.toDto(categoryRepository.save(category));
@@ -35,10 +36,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDto updateCategory(CategoryDto categoryDto, int catId) {
         categoryValidation.existId(catId);
-        Category category = categoryRepository.findById(catId).orElseThrow();
-        category.setName(categoryDto.getName());
+        Category oldCategory = categoryRepository.findById(catId).orElseThrow();
+        if (categoryDto.getName() != null && !oldCategory.getName().equals(categoryDto.getName())) {
+            categoryValidation.checkUniqNameCategoryIgnoreCase(categoryDto.getName());
+        }
+        oldCategory.setName(categoryDto.getName());
 
-        return categoryMapper.toDto(categoryRepository.save(category));
+        return categoryMapper.toDto(categoryRepository.save(oldCategory));
     }
 
     @Override

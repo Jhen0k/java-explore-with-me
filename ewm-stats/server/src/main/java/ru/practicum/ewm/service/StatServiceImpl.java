@@ -5,18 +5,18 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.dto.HitDto;
-import ru.practicum.dto.NewHitDto;
-import ru.practicum.dto.StatDto;
+import ru.practicum.dto.RequestStatsDto;
+import ru.practicum.dto.ResponseStatsDto;
+import ru.practicum.ewm.exception.ValidTimeException;
 import ru.practicum.ewm.mapper.HitMapper;
 import ru.practicum.ewm.mapper.StatListMapper;
-import ru.practicum.ewm.model.Hit;
 import ru.practicum.ewm.model.Stat;
+import ru.practicum.ewm.model.ResponseStat;
 import ru.practicum.ewm.repository.StatRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,24 +27,31 @@ public class StatServiceImpl implements StatService {
     HitMapper hitMapper;
     StatListMapper statListMapper;
 
+
     @Override
-    @Transactional
-    public NewHitDto createHit(HitDto hitDto) {
-        Hit hit = hitMapper.toEntity(hitDto);
-        return hitMapper.toDto(statRepository.save(hit));
+    public RequestStatsDto postStat(RequestStatsDto requestStatsDto) {
+        Stat stat = hitMapper.toStatRequest(requestStatsDto);
+        return hitMapper.toRequestStatDto(statRepository.save(stat));
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<StatDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        List<Stat> stats;
+    public List<ResponseStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
+        checkValidTime(start, end);
+
+        List<ResponseStat> stats;
 
         if (unique) {
-            stats = statRepository.getStatsIsUnique(uris, start, end);
+            stats = statRepository.getStatByUrisAndTimeIsUnique(uris, start, end);
         } else {
-            stats = statRepository.getStatsIsNotUnique(uris, start, end);
+            stats = statRepository.getStatByUrisAndTime(uris, start, end);
         }
 
-        return statListMapper.toListDto(stats);
+        return stats.stream().map(hitMapper::toResponseStatsDto).collect(Collectors.toList());
+    }
+
+    private void checkValidTime(LocalDateTime start, LocalDateTime end) {
+        if (end.isBefore(start)) {
+            throw new ValidTimeException("Время начала не может быть позже окончания мероприятия");
+        }
     }
 }

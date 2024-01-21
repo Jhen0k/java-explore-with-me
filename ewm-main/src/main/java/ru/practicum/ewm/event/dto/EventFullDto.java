@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 import ru.practicum.ewm.category.dto.CategoryDto;
+import ru.practicum.ewm.event.enums.State;
 import ru.practicum.ewm.user.dto.UserShortDto;
-import ru.practicum.ewm.event.model.Location;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -37,8 +37,7 @@ public class EventFullDto {
     @NotNull
     UserShortDto initiator;
 
-    @NotNull
-    Location location;
+    LocationDto location;
 
     @NotNull
     Boolean paid;
@@ -50,7 +49,7 @@ public class EventFullDto {
 
     Boolean requestModeration;
 
-    String state;
+    State state;
 
     @NotBlank
     String title;

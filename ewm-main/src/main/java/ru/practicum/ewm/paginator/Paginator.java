@@ -13,7 +13,7 @@ public abstract class Paginator {
 
         int page = from / size;
 
-        Sort sort = Sort.by(Sort.Direction.DESC, properties);
+        Sort sort = Sort.by(Sort.Direction.ASC, properties);
 
         return PageRequest.of(page, size, sort);
     }

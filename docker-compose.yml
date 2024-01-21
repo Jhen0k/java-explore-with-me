@@ -23,6 +23,7 @@ services:
       - POSTGRES_DB=statistic
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass
+      - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
 
   ewm-service:
     build: ewm-main

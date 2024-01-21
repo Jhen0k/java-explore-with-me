@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.repository.CategoryRepository;
+import ru.practicum.ewm.exception.ConflictException;
 import ru.practicum.ewm.exception.NotFoundException;
 
 @Service
@@ -19,6 +20,12 @@ public class CategoryValidation {
     public void existId(int id) {
         if (!categoryRepository.existsById(id)) {
             throw new NotFoundException(String.format("Категория с id %s не найдена", id));
+        }
+    }
+
+    public void checkUniqNameCategoryIgnoreCase(String name) {
+        if (categoryRepository.existsByNameIgnoreCase(name)) {
+            throw new ConflictException(("Категория " + name + " уже существует"));
         }
     }
 }

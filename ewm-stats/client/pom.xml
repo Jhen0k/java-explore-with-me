@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>ru.practicum</groupId>
-        <artifactId>ewm-stats</artifactId>
+        <artifactId>ewm-responseStats</artifactId>
         <version>0.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>client</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
 
     <name>Explore With Me - Client</name>
 
@@ -17,7 +17,12 @@
         <dependency>
             <groupId>ru.practicum</groupId>
             <artifactId>dto</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
 
         <dependency>

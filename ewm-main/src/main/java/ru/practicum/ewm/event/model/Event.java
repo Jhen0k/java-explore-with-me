@@ -16,15 +16,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
@@ -43,10 +39,10 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column
+    @Column(name = "annotation", nullable = false, length = 2000)
     String annotation;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "category_id")
     Category category;
 
@@ -56,13 +52,13 @@ public class Event {
     @Column(name = "created_on")
     LocalDateTime createdOn;
 
-    @Column
+    @Column(name = "description", length = 7000)
     String description;
 
-    @Column(name = "event_date")
+    @Column(name = "event_date", nullable = false)
     LocalDateTime eventDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "initiator_id")
     User initiator;
 
@@ -70,7 +66,7 @@ public class Event {
     @JoinColumn(name = "location_id")
     Location location;
 
-    @Column
+    @Column(name = "paid")
     Boolean paid;
 
     @Column(name = "participant_limit")
@@ -80,16 +76,13 @@ public class Event {
     LocalDateTime publishedOn;
 
     @Column(name = "request_moderation")
-    Boolean requestModeration;
+    boolean requestModeration;
 
-    @Column
+    @Column(name = "state")
     @Enumerated(EnumType.STRING)
     State state;
 
-    @Column
+    @Column(name = "title", nullable = false, length = 120)
     String title;
-
-    @Column
-    Integer views;
 
 }

@@ -3,6 +3,7 @@ package ru.practicum.ewm.event.model;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,15 +24,16 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Table(name = "locations")
+@EqualsAndHashCode(exclude = "id")
 public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Integer id;
 
-    @Column
+    @Column(name = "lat")
     Float lat;
 
-    @Column
+    @Column(name = "lon")
     Float lon;
 }

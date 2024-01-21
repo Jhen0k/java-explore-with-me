@@ -1,34 +1,38 @@
 package ru.practicum.ewm.event.service;
 
-import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.event.dto.EventFullDto;
+import ru.practicum.ewm.event.dto.EventParams;
+import ru.practicum.ewm.event.dto.EventParamsAdmin;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.dto.NewEventDto;
-import ru.practicum.ewm.event.enums.State;
-import ru.practicum.ewm.user.dto.UserShortDto;
+import ru.practicum.ewm.event.dto.UpdateEventAdminRequest;
+import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
+import ru.practicum.ewm.request.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.ewm.request.dto.EventRequestStatusUpdateResult;
+import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface EventService {
 
     EventFullDto createEvent(NewEventDto newEventDto, Integer userId);
 
-    EventFullDto updateEvent(NewEventDto newEventDto, Integer userId, Integer eventId);
+    EventFullDto updateEventAddedByCurrentUser(UpdateEventUserRequest updateEventRequest, Integer userId, Integer eventId);
 
-    EventFullDto updateEventInAdmin(NewEventDto newEventDto, Integer eventId);
+    EventFullDto updateEventByAdmin(UpdateEventAdminRequest updateEventRequest, Integer eventId);
 
-    List<EventShortDto> getAllEventsAddByCurrentUser(Integer userId, Integer from, Integer size);
+    List<EventShortDto> getAllEventsAddedByCurrentUser(Integer userId, Integer from, Integer size);
 
-    EventFullDto getFullEventAddByCurrentUser(Integer userId, Integer eventId);
+    EventFullDto getFullEventAddedByCurrentUser(Integer userId, Integer eventId);
 
-    List<EventFullDto> getEventsForAdmin(List<UserShortDto> users, List<State> states, List<CategoryDto> categories,
-                                   LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size);
+    List<EventFullDto> getEventsForAdmin(EventParamsAdmin eventParamsAdmin);
 
-    List<EventFullDto> getEventsBySort(String text, List<State> states, Boolean paid, LocalDateTime rangeStart,
-                                 LocalDateTime rangeEnd, Boolean onlyAvailable, String sort, Integer from, Integer size);
+    List<ParticipationRequestDto> getAllParticipationRequestsFromEventByOwner(Integer userId, Integer eventId);
 
-    EventFullDto getFullEventById(Integer id);
+    EventRequestStatusUpdateResult updateStatusRequest(Integer userId, Integer eventId, EventRequestStatusUpdateRequest inputUpdate);
 
+    List<EventShortDto> getAllEventFromPublic(EventParams searchEventParams, HttpServletRequest request);
 
+    EventFullDto getEventById(Integer eventId, HttpServletRequest request);
 }

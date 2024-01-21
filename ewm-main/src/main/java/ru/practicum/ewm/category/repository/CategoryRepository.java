@@ -10,4 +10,6 @@ import java.util.List;
 public interface CategoryRepository extends JpaRepository<Category, Integer> {
 
     List<Category> getCategoriesBy(Pageable pageable);
+
+    Boolean existsByNameIgnoreCase(String name);
 }
