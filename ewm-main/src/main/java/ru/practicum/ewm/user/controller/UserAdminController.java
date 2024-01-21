@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +19,6 @@ import ru.practicum.ewm.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
-@Validated
 @RestController
 @RequestMapping(path = "/admin/users")
 @RequiredArgsConstructor
@@ -37,7 +35,7 @@ public class UserAdminController {
 
     @GetMapping()
     public List<UserDto> getUsers(@RequestParam(required = false) Integer ids,
-                                  @RequestParam(defaultValue = "0") Integer from,
+                                  @RequestParam(defaultValue = "0")  Integer from,
                                   @RequestParam(defaultValue = "10") Integer size) {
         return userService.getUsers(ids, from, size);
     }
