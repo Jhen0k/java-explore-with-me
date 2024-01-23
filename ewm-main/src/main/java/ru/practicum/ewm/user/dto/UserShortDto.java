@@ -1,18 +1,24 @@
 package ru.practicum.ewm.user.dto;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.Value;
+import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-@Value
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserShortDto {
-
-    Integer id;
-
-    @NotBlank
-    @Size(min = 2, max = 250)
-    @Pattern(regexp = "^\\w+\\s{1,2}\\w+(\\s{1,2}\\w+)?$")
+    @NotNull
+    Long id;
+    @NotNull
     String name;
 }

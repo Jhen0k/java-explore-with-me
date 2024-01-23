@@ -17,8 +17,7 @@ import javax.validation.constraints.Size;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryDto {
 
-    Integer id;
-
+    Long id;
     @NotBlank
     @Size(min = 1, max = 50)
     String name;

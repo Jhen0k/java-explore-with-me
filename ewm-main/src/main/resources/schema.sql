@@ -1,51 +1,53 @@
 DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS locations CASCADE;DROP TABLE IF EXISTS events CASCADE;
+DROP TABLE IF EXISTS locations CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS compilations CASCADE;
 DROP TABLE IF EXISTS compilations_to_event CASCADE;
 DROP TABLE If EXISTS requests CASCADE;
 
+CREATE TABLE IF NOT EXISTS categories
+(
+    id   BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name varchar(50),
+    UNIQUE (name)
+    );
+
 CREATE TABLE IF NOT EXISTS users
 (
     id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    email varchar(254) UNIQUE,
-    name  varchar(250)
-    );
-
-CREATE TABLE IF NOT EXISTS categories
-(
-    id    BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    name  varchar(50) UNIQUE
+    name  varchar(250),
+    email varchar(254),
+    UNIQUE (email)
     );
 
 CREATE TABLE IF NOT EXISTS locations
 (
-    id   BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    lat  float NOT NULL,
-    lon  float NOT NULL
-    );
+    id  BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    lat NUMERIC,
+    lon NUMERIC
+);
 
 CREATE TABLE IF NOT EXISTS events
 (
-    id BIGINT          GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    annotation         varchar(2000) NOT NULL,
-    category_id        BIGINT,
-    confirmed_requests BIGINT,
-    created_on         TIMESTAMP WITHOUT TIME ZONE,
-    description        varchar(7000),
-    event_date         TIMESTAMP WITHOUT TIME ZONE,
-    initiator_id       BIGINT,
+    id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY UNIQUE,
+    annotation         VARCHAR(2000)               NOT NULL,
+    category_id        BIGINT                      NOT NULL,
+    confirmed_Requests BIGINT,
+    create_date        TIMESTAMP WITHOUT TIME ZONE,
+    description        VARCHAR(7000),
+    event_date         TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    initiator_id       BIGINT                      NOT NULL,
     location_id        BIGINT,
     paid               BOOLEAN,
     participant_limit  INTEGER DEFAULT 0,
-    published_on       TIMESTAMP WITHOUT TIME ZONE,
-    request_moderation BOOLEAN,
-    state              varchar(200),
-    title              varchar(120),
-    CONSTRAINT fk_events_to_category FOREIGN KEY (category_id) REFERENCES categories (id),
-    CONSTRAINT fk_events_to_users FOREIGN KEY (initiator_id) REFERENCES users (id),
-    CONSTRAINT fk_events_to_locations FOREIGN KEY (location_id) REFERENCES locations (id)
+    published_date     TIMESTAMP WITHOUT TIME ZONE,
+    request_moderation BOOLEAN DEFAULT true,
+    status             VARCHAR(200),
+    title              VARCHAR(120)                NOT NULL,
+    CONSTRAINT fk_event_to_user FOREIGN KEY (initiator_id) REFERENCES users (id),
+    CONSTRAINT fk_event_to_category FOREIGN KEY (category_id) REFERENCES categories (id),
+    CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES locations (id)
     );
 
 CREATE TABLE IF NOT EXISTS requests
@@ -62,7 +64,7 @@ CREATE TABLE IF NOT EXISTS requests
 CREATE TABLE IF NOT EXISTS compilations
 (
     id     BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY UNIQUE,
-    pinned BOOLEAN      NOT NULL,
+    pinned BOOLEAN     NOT NULL,
     title  VARCHAR(50) NOT NULL
     );
 

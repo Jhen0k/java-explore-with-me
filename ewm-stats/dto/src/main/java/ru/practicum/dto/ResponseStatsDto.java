@@ -20,5 +20,5 @@ public class ResponseStatsDto {
 
     String uri;
 
-    Integer hits;
+    Long hits;
 }

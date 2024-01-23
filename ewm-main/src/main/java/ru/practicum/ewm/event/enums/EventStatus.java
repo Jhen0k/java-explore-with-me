@@ -1,8 +1,7 @@
 package ru.practicum.ewm.event.enums;
 
-public enum RequestState {
+public enum EventStatus {
     PENDING,
-    CONFIRMED,
-    REJECTED,
+    PUBLISHED,
     CANCELED
 }

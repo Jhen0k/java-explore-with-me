@@ -3,29 +3,23 @@ package ru.practicum.ewm.compilation.dto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateCompilationDto {
-
-    Integer id;
-
-    Set<Integer> events;
-
+    Long id;
+    Set<Long> events;
     Boolean pinned;
-
     @Size(max = 50)
     String title;
 }

@@ -18,7 +18,6 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Validated
 @RestController()
 @RequestMapping(path = "/categories")
 @RequiredArgsConstructor
@@ -28,15 +27,15 @@ public class CategoryPublicController {
     CategoryService categoryService;
 
     @GetMapping("/{catId}")
-    CategoryDto getCategoryById(@PathVariable int catId) {
-        return categoryService.getCategoriesById(catId);
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryDto getCategoryById(@PathVariable Long catId) {
+        return categoryService.getCategoryById(catId);
     }
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
-                                    @RequestParam(defaultValue = "10") @Positive Integer size) {
-
+    public List<CategoryDto> getCategories(@RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                           @RequestParam(defaultValue = "10") @Positive Integer size) {
         return categoryService.getCategories(from, size);
     }
 }

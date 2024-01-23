@@ -1,35 +1,28 @@
 package ru.practicum.ewm.request.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import ru.practicum.ewm.request.enums.RequestStatus;
+import ru.practicum.ewm.event.enums.RequestStatus;
 import ru.practicum.ewm.request.model.Request;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface RequestRepository extends JpaRepository<Request, Integer> {
 
-    @Query
-    List<Request> findAllByEventId(Integer eventId);
+public interface RequestRepository extends JpaRepository<Request, Long> {
+    List<Request> findAllByEventId(Long eventId);
 
-    @Query
-    Optional<Request> findByEventIdAndId(Integer eventId, Integer id);
+    Optional<Request> findByEventIdAndId(Long eventId, Long id);
 
-    int countByEventIdAndStatus(Integer eventId, RequestStatus status);
+    int countByEventIdAndStatus(Long eventId, RequestStatus status);
 
-    @Query
-    List<Request> findAllByEventIdInAndStatus(List<Integer> eventIds, RequestStatus status);
+    List<Request> findAllByEventIdInAndStatus(List<Long> eventIds, RequestStatus status);
 
-    @Query
-    Boolean existsByEventIdAndRequesterId(Integer eventId, Integer userId);
+    Boolean existsByEventIdAndRequesterId(Long eventId, Long userId);
 
-    @Query
-    Optional<Request> findByIdAndRequesterId(Integer id, Integer requesterId);
+    Optional<Request> findByIdAndRequesterId(Long id, Long requesterId);
 
-    @Query
-    List<Request> findAllByRequesterId(Integer userId);
+    List<Request> findAllByRequesterId(Long userId);
 
-    @Query
-    Optional<List<Request>> findByEventIdAndIdIn(Integer eventId, List<Integer> id);
+    Optional<List<Request>> findByEventIdAndIdIn(Long eventId, List<Long> id);
+
 }

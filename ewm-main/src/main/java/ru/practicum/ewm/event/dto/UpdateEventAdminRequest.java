@@ -2,18 +2,18 @@ package ru.practicum.ewm.event.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.event.enums.AdminState;
+import ru.practicum.ewm.event.enums.EventAdminState;
 
-@Setter
-@Getter
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateEventAdminRequest extends UpdateEventRequest {
 
-    AdminState stateAction;
+    EventAdminState stateAction;
 }

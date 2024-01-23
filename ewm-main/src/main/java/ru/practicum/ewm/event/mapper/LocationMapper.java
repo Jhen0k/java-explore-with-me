@@ -7,7 +7,7 @@ import ru.practicum.ewm.event.model.Location;
 @Mapper(componentModel = "spring")
 public interface LocationMapper {
 
-    Location toEntity(LocationDto locationDto);
+    Location toLocation(LocationDto locationDto);
 
-    LocationDto toDto(Location location);
+    LocationDto toLocationDto(Location location);
 }

@@ -11,6 +11,7 @@ import ru.practicum.ewm.event.model.Event;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,19 +28,15 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity(name = "compilations")
 public class Compilation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-
-    @ManyToMany
+    Long id;
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "compilations_to_event", joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     Set<Event> events;
-
     @Column(name = "pinned")
     Boolean pinned;
-
     @Column(name = "title", nullable = false, length = 50)
     String title;
 }

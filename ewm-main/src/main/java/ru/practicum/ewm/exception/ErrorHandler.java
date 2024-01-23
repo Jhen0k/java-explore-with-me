@@ -1,7 +1,6 @@
 package ru.practicum.ewm.exception;
 
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.PSQLException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -9,56 +8,65 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
-@Slf4j
+import java.time.LocalDateTime;
+
 @RestControllerAdvice
+@Slf4j
 public class ErrorHandler {
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError methodArgumentNotException(final MethodArgumentNotValidException e) {
+        log.warn("Validation exception: ", e);
+        return new ApiError(HttpStatus.BAD_REQUEST.toString(),
+                "Incorrectly made request.",
+                e.getMessage(),
+                LocalDateTime.now());
+    }
+
+    @ExceptionHandler()
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ApiError dataValidationException(final DataIntegrityViolationException e) {
+        log.warn("Validation exception: ", e);
+        return new ApiError(HttpStatus.CONFLICT.toString(),
+                "Integrity constraint has been violated.",
+                e.getMessage(),
+                LocalDateTime.now());
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ApiError handleNotFoundException(NotFoundException e) {
-        log.debug("Получен статус 404 NOT_FOUND {}", e.getMessage(), e);
-        return ApiError.builder()
-                .status(HttpStatus.NOT_FOUND.toString())
-                .message(e.getMessage())
-                .reason("The required object was not found.")
-                .build();
+    public ApiError notFoundException(final NotFoundException e) {
+        return new ApiError(HttpStatus.NOT_FOUND.toString(),
+                "The required object was not found.",
+                e.getMessage(),
+                LocalDateTime.now());
     }
 
-
-    @ExceptionHandler({MethodArgumentNotValidException.class, ValidationException.class, MethodArgumentTypeMismatchException.class,
-            MissingServletRequestParameterException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handlerIncorrectParametersException(Exception e) {
-        log.debug("Получен статус 400 BAD_REQUEST {}", e.getMessage(), e);
-        return ApiError.builder()
-                .status(HttpStatus.BAD_REQUEST.toString())
-                .message(e.getMessage())
-                .reason("Incorrect parameters")
-                .build();
+    public ApiError validationException(final ValidationException e) {
+        return new ApiError(HttpStatus.NOT_FOUND.toString(),
+                "Incorrectly made request.",
+                e.getMessage(),
+                LocalDateTime.now());
     }
-
-    @ExceptionHandler({PSQLException.class, ConflictException.class, DataIntegrityViolationException.class})
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ApiError handlerValidationException(Exception e) {
-        log.debug("Получен статус 409 CONFLICT {}", e.getMessage());
-        return ApiError.builder()
-                .status(HttpStatus.CONFLICT.toString())
-                .message(e.getMessage())
-                .reason("Request is CONFLICT")
-                .build();
-    }
-
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ApiError handlerOtherException(Throwable e) {
-        log.warn("Получен статус 500 SERVER_ERROR {}", e.getMessage(), e);
-        return ApiError.builder()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR.toString())
-                .message(e.getMessage())
-                .reason("Request is INTERNAL_SERVER_ERROR")
-                .build();
+    public ApiError throwableException(final Throwable e) {
+        return new ApiError(HttpStatus.INTERNAL_SERVER_ERROR.toString(),
+                "internal server error",
+                e.getMessage(),
+                LocalDateTime.now());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError requestParameterException(final MissingServletRequestParameterException e) {
+        return new ApiError(HttpStatus.BAD_REQUEST.toString(),
+                "Incorrectly made request.",
+                e.getMessage(),
+                LocalDateTime.now());
     }
 }

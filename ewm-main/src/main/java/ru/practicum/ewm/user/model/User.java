@@ -2,7 +2,6 @@ package ru.practicum.ewm.user.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,23 +14,19 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Setter
+@Entity
+@Table(name = "users")
 @Getter
-@Builder
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
-
-    @Column
-    String email;
-
-    @Column
+    Long id;
+    @Column(name = "name")
     String name;
+    @Column(name = "email")
+    String email;
 }

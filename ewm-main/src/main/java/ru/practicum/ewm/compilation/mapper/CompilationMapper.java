@@ -12,20 +12,20 @@ import java.util.stream.Collectors;
 @Mapper(componentModel = "spring")
 public abstract class CompilationMapper {
     @Autowired
-    EventMapper eventMapper;
+    protected EventMapper eventMapper;
 
     public CompilationDto toDto(Compilation compilation) {
         return CompilationDto.builder()
                 .id(compilation.getId())
                 .events(compilation.getEvents().stream()
-                        .map(eventMapper::toDtoInShortEvent)
+                        .map(eventMapper::toEventShortDto)
                         .collect(Collectors.toSet()))
                 .pinned(compilation.getPinned())
                 .title(compilation.getTitle())
                 .build();
     }
 
-    public Compilation toEntity(NewCompilationDto compilationDto) {
+    public Compilation toCompilation(NewCompilationDto compilationDto) {
         return Compilation.builder()
                 .pinned(compilationDto.getPinned())
                 .title(compilationDto.getTitle())

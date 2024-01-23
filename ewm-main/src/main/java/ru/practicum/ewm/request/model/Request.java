@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+import ru.practicum.ewm.event.enums.RequestStatus;
 import ru.practicum.ewm.event.model.Event;
-import ru.practicum.ewm.request.enums.RequestStatus;
 import ru.practicum.ewm.user.model.User;
 
 import javax.persistence.Column;
@@ -32,9 +32,9 @@ import java.time.LocalDateTime;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
 
-    @Column(name = "create_date", nullable = false)
+    @Column(name = "create_date")
     LocalDateTime created;
 
     @ManyToOne
@@ -46,6 +46,6 @@ public class Request {
     User requester;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     RequestStatus status;
 }

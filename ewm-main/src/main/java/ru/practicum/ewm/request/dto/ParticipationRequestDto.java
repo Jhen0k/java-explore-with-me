@@ -4,30 +4,23 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import ru.practicum.ewm.request.enums.RequestStatus;
+import ru.practicum.ewm.event.enums.RequestStatus;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ParticipationRequestDto {
-
-    Integer id;
-
-    Integer event;
-
+    Long id;
+    Long event;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime created;
-
-    Integer requester;
-
+    Long requester;
     RequestStatus status;
 }

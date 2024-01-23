@@ -3,18 +3,20 @@ package ru.practicum.ewm.category.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.dto.CategoryDto;
-import ru.practicum.ewm.category.dto.NewCategoryDto;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
-import ru.practicum.ewm.category.model.Category;
+import ru.practicum.ewm.exception.NotFoundException;
+import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.paginator.Paginator;
 import ru.practicum.ewm.category.repository.CategoryRepository;
-import ru.practicum.ewm.category.validation.CategoryValidation;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,48 +24,66 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
-    CategoryValidation categoryValidation;
     CategoryMapper categoryMapper;
 
     @Override
-    @Transactional
-    public CategoryDto createCategory(NewCategoryDto categoryDto) {
-        Category category = categoryMapper.toEntity(categoryDto);
-
-        return categoryMapper.toDto(categoryRepository.save(category));
+    public CategoryDto postCategory(CategoryDto categoryDto) {
+        Category category = categoryMapper.toCategory(categoryDto);
+        category = categoryRepository.save(category);
+        return categoryMapper.toCategoryDto(category);
     }
 
     @Override
-    public CategoryDto updateCategory(CategoryDto categoryDto, int catId) {
-        categoryValidation.existId(catId);
-        Category oldCategory = categoryRepository.findById(catId).orElseThrow();
-        if (categoryDto.getName() != null && !oldCategory.getName().equals(categoryDto.getName())) {
-            categoryValidation.checkUniqNameCategoryIgnoreCase(categoryDto.getName());
+    public void deleteCategory(long id) {
+        try {
+            categoryRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Category with id=" + id + " was not found");
         }
-        oldCategory.setName(categoryDto.getName());
+    }
 
-        return categoryMapper.toDto(categoryRepository.save(oldCategory));
+    @Override
+    public CategoryDto patchCategory(long id, CategoryDto categoryDto) {
+        Category categoryUpdate = categoryMapper.toCategory(categoryDto);
+        Optional<Category> categoryOldOpt = categoryRepository.findById(id);
+
+        if (categoryOldOpt.isEmpty()) {
+            throw new NotFoundException("Category with id=" + id + "was not found");
+        }
+
+        Category categoryOld = categoryOldOpt.get();
+        categoryUpdate.setId(categoryOld.getId());
+
+        return categoryMapper.toCategoryDto(categoryRepository.save(categoryUpdate));
     }
 
     @Override
     public List<CategoryDto> getCategories(int from, int size) {
         Pageable pageable = Paginator.getPageable(from, size);
+        Page<Category> categories = categoryRepository.findAll(pageable);
 
-        return categoryMapper.toListDto(categoryRepository.getCategoriesBy(pageable));
+        return categories.stream().map(categoryMapper::toCategoryDto).collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
-    public CategoryDto getCategoriesById(int catId) {
-        categoryValidation.existId(catId);
+    public CategoryDto getCategoryById(long catId) {
+        Optional<Category> category = categoryRepository.findById(catId);
 
-        return categoryMapper.toDto(categoryRepository.findById(catId).orElseThrow());
+        if (category.isEmpty()) {
+            throw new NotFoundException("Category with id=" + catId + " was not found");
+        }
+
+        return categoryMapper.toCategoryDto(category.get());
     }
 
     @Override
-    @Transactional
-    public void deleteCategory(int catId) {
-        categoryValidation.existId(catId);
-        categoryRepository.deleteById(catId);
+    public Category checkExistCategory(long categoryId) {
+        Optional<Category> category = categoryRepository.findById(categoryId);
+
+        if (category.isEmpty()) {
+            throw new NotFoundException("Category with id=" + categoryId + " was not found");
+        } else {
+            return category.get();
+        }
     }
 }

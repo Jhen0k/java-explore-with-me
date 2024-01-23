@@ -5,8 +5,11 @@ import ru.practicum.ewm.event.dto.EventParams;
 import ru.practicum.ewm.event.dto.EventParamsAdmin;
 import ru.practicum.ewm.event.dto.EventShortDto;
 import ru.practicum.ewm.event.dto.NewEventDto;
+import ru.practicum.ewm.event.dto.ParamsSearchForAdmin;
+import ru.practicum.ewm.event.dto.SearchParamsForEvents;
 import ru.practicum.ewm.event.dto.UpdateEventAdminRequest;
 import ru.practicum.ewm.event.dto.UpdateEventUserRequest;
+import ru.practicum.ewm.event.model.Event;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
@@ -16,23 +19,26 @@ import java.util.List;
 
 public interface EventService {
 
-    EventFullDto createEvent(NewEventDto newEventDto, Integer userId);
+    EventFullDto postEvent(Long userId, NewEventDto newEventDto);
 
-    EventFullDto updateEventAddedByCurrentUser(UpdateEventUserRequest updateEventRequest, Integer userId, Integer eventId);
+    List<EventShortDto> getEventForOwner(long userId, int from, int size);
 
-    EventFullDto updateEventByAdmin(UpdateEventAdminRequest updateEventRequest, Integer eventId);
+    EventFullDto getFullEventForOwner(long userId, long eventId);
 
-    List<EventShortDto> getAllEventsAddedByCurrentUser(Integer userId, Integer from, Integer size);
+    EventFullDto updateEventOwner(long userId, long eventId, UpdateEventUserRequest eventUserRequest);
 
-    EventFullDto getFullEventAddedByCurrentUser(Integer userId, Integer eventId);
+    List<EventFullDto> getAllEventFromAdmin(ParamsSearchForAdmin params);
 
-    List<EventFullDto> getEventsForAdmin(EventParamsAdmin eventParamsAdmin);
+    EventFullDto updateEventFromAdmin(long eventId, UpdateEventAdminRequest inputUpdate);
 
-    List<ParticipationRequestDto> getAllParticipationRequestsFromEventByOwner(Integer userId, Integer eventId);
+    List<ParticipationRequestDto> getAllParticipationRequestsFromEventByOwner(Long userId, Long eventId);
 
-    EventRequestStatusUpdateResult updateStatusRequest(Integer userId, Integer eventId, EventRequestStatusUpdateRequest inputUpdate);
+    EventRequestStatusUpdateResult updateStatusRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest inputUpdate);
 
-    List<EventShortDto> getAllEventFromPublic(EventParams searchEventParams, HttpServletRequest request);
+    Event checkExistEvent(long eventId);
 
-    EventFullDto getEventById(Integer eventId, HttpServletRequest request);
+    List<EventShortDto> getAllEventFromPublic(SearchParamsForEvents searchParamsForEvents, HttpServletRequest request);
+
+    EventFullDto getEventById(Long eventId, HttpServletRequest request);
+
 }

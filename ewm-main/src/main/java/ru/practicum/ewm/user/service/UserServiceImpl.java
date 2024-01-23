@@ -3,16 +3,20 @@ package ru.practicum.ewm.user.service;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.paginator.Paginator;
 import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.mapper.UserMapper;
+import ru.practicum.ewm.user.model.User;
 import ru.practicum.ewm.user.repository.UserRepository;
-import ru.practicum.ewm.user.validation.UserValidation;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,33 +25,46 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
     UserMapper userMapper;
-    UserValidation userValidation;
 
     @Override
-    public UserDto createUser(UserDto userDto) {
-        return userMapper.toDto(userRepository.save(userMapper.toEntity(userDto)));
+    public UserDto postUser(UserDto userDto) {
+        User user = userMapper.toUser(userDto);
+
+        return userMapper.toUserDto(userRepository.save(user));
     }
 
     @Override
-    public List<UserDto> getUsers(Integer ids, Integer from, Integer size) {
-        List<UserDto> userDtoList = new ArrayList<>();
-        if (ids != null) {
-            if (!userRepository.existsById(ids)) {
-                return new ArrayList<>();
-            } else {
-                UserDto userDto = userMapper.toDto(userRepository.findById(ids).orElseThrow());
-                userDtoList.add(userDto);
-                return userDtoList;
-            }
-        } else {
-            Pageable pageable = Paginator.getPageable(from, size);
-            return userMapper.toDtoList(userRepository.getAllBy(pageable));
+    public void deleteUser(long userId) {
+        try {
+            userRepository.deleteById(userId);
+        } catch (EmptyResultDataAccessException e) {
+            throw new NotFoundException("Category with id=" + userId + " was not found");
         }
     }
 
     @Override
-    public void deleteUser(Integer userId) {
-        userValidation.checkUserById(userId);
-        userRepository.deleteById(userId);
+    public List<UserDto> getUsers(List<Long> ids, int from, int size) {
+        Pageable pageable = Paginator.getPageable(from, size);
+        Page<User> users;
+
+        if (ids == null) {
+            users = userRepository.findAll(pageable);
+        } else {
+            users = userRepository.findAllByIdIn(ids, pageable);
+        }
+
+        return users.stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
+
+    @Override
+    public User checkExistUser(long userId) {
+        Optional<User> user = userRepository.findById(userId);
+
+        if (user.isEmpty()) {
+            throw new NotFoundException("User with id= " + userId + " was not found");
+        } else {
+            return user.get();
+        }
+    }
+
 }

@@ -7,7 +7,7 @@ import ru.practicum.ewm.request.model.Request;
 @Mapper(componentModel = "spring")
 public abstract class RequestMapper {
 
-    public ParticipationRequestDto toDto(Request request) {
+    public static ParticipationRequestDto toParticipationRequestDto(Request request) {
         return ParticipationRequestDto.builder()
                 .id(request.getId())
                 .event(request.getEvent().getId())
@@ -17,7 +17,7 @@ public abstract class RequestMapper {
                 .build();
     }
 
-    public Request toEntity(ParticipationRequestDto participationRequestDto) {
+    public Request toRequest(ParticipationRequestDto participationRequestDto) {
         return Request.builder()
                 .id(participationRequestDto.getId())
                 .event(null)

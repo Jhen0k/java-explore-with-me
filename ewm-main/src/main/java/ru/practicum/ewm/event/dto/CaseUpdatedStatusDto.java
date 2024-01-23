@@ -3,22 +3,20 @@ package ru.practicum.ewm.event.dto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CaseUpdatedStatusDto {
 
-    List<Integer> idsFromUpdateStatus;
+    List<Long> idsFromUpdateStatus;
 
-    List<Integer> processedIds;
+    List<Long> processedIds;
 }

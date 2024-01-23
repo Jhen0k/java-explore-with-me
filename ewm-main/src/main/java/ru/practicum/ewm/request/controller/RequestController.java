@@ -21,28 +21,27 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@Validated
 @RequestMapping(path = "users/{userId}/requests")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class RequestPrivateController {
+public class RequestController {
 
     RequestService requestService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto addRequest(@PathVariable(value = "userId") @Min(0) Integer userId,
-                                              @RequestParam(name = "eventId") @Min(0) Integer eventId) {
+    public ParticipationRequestDto addRequest(@PathVariable(value = "userId") Long userId,
+                                              @RequestParam(name = "eventId") Long eventId) {
         return requestService.addNewRequest(userId, eventId);
     }
 
     @GetMapping
-    public List<ParticipationRequestDto> getAllRequests(@PathVariable(value = "userId") @Min(0) Integer userId) {
+    public List<ParticipationRequestDto> getAllRequests(@PathVariable(value = "userId") Long userId) {
         return requestService.getRequestsByUserId(userId);
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public ParticipationRequestDto canceledRequest(@PathVariable(value = "userId") @Min(0) Integer userId,
-                                                   @PathVariable(value = "requestId") @Min(0) Integer requestId) {
+    public ParticipationRequestDto canceledRequest(@PathVariable(value = "userId") Long userId,
+                                                   @PathVariable(value = "requestId") Long requestId) {
         return requestService.cancelRequest(userId, requestId);
     }
 }

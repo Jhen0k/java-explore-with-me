@@ -24,7 +24,6 @@ import ru.practicum.ewm.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Validated
@@ -38,44 +37,42 @@ public class EventPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto createEvent(@Valid @RequestBody NewEventDto newEventDto,
-                                    @PathVariable @Min(1) Integer userId) {
-        return eventService.createEvent(newEventDto, userId);
+    public EventFullDto postEvent(@PathVariable Long userId, @RequestBody @Valid NewEventDto newEventDto) {
+        return eventService.postEvent(userId, newEventDto);
     }
 
     @PatchMapping("/{eventId}")
-    public EventFullDto updateEventAddedByCurrentUser(@Valid @RequestBody UpdateEventUserRequest updateEventRequest,
-                                                      @PathVariable @Min(1) Integer userId,
-                                                      @PathVariable @Min(1) Integer eventId) {
-
-        return eventService.updateEventAddedByCurrentUser(updateEventRequest, userId, eventId);
+    @ResponseStatus(HttpStatus.OK)
+    public EventFullDto updateEventOwner(@PathVariable Long userId,
+                                         @PathVariable Long eventId,
+                                         @RequestBody @Valid UpdateEventUserRequest eventUserRequest) {
+        return eventService.updateEventOwner(userId, eventId, eventUserRequest);
     }
 
     @GetMapping
-    List<EventShortDto> getAllEventsAddedByCurrentUser(@PathVariable @Min(1) Integer userId,
-                                                       @RequestParam(defaultValue = "0") Integer from,
-                                                       @RequestParam(defaultValue = "10") Integer size) {
-
-        return eventService.getAllEventsAddedByCurrentUser(userId, from, size);
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventShortDto> getEventForOwner(@PathVariable Long userId,
+                                                @RequestParam(defaultValue = "0") Integer from,
+                                                @RequestParam(defaultValue = "10") Integer size) {
+        return eventService.getEventForOwner(userId, from, size);
     }
 
     @GetMapping("/{eventId}")
-    EventFullDto getFullEventAddedByCurrentUser(@PathVariable @Min(1) Integer userId,
-                                                @PathVariable @Min(1) Integer eventId) {
-
-        return eventService.getFullEventAddedByCurrentUser(userId, eventId);
+    @ResponseStatus(HttpStatus.OK)
+    public EventFullDto getFullEventForOwner(@PathVariable Long userId, @PathVariable Long eventId) {
+        return eventService.getFullEventForOwner(userId, eventId);
     }
 
     @GetMapping("/{eventId}/requests")
-    public List<ParticipationRequestDto> getAllRequestByEventCurrentUser(@PathVariable @Min(1) Integer userId,
-                                                                         @PathVariable @Min(1) Integer eventId) {
+    public List<ParticipationRequestDto> getAllRequestByEventFromOwner(@PathVariable(value = "userId") Long userId,
+                                                                       @PathVariable(value = "eventId") Long eventId) {
         return eventService.getAllParticipationRequestsFromEventByOwner(userId, eventId);
     }
 
     @PatchMapping("/{eventId}/requests")
-    public EventRequestStatusUpdateResult updateStatusRequestCurrentUser(@PathVariable @Min(1) Integer userId,
-                                                                         @PathVariable @Min(1) Integer eventId,
-                                                                         @RequestBody EventRequestStatusUpdateRequest inputUpdate) {
+    public EventRequestStatusUpdateResult updateStatusRequestFromOwner(@PathVariable(value = "userId") Long userId,
+                                                                       @PathVariable(value = "eventId") Long eventId,
+                                                                       @RequestBody @Valid EventRequestStatusUpdateRequest inputUpdate) {
         return eventService.updateStatusRequest(userId, eventId, inputUpdate);
     }
 }

@@ -13,12 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
 import ru.practicum.ewm.compilation.service.CompilationService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-@Valid
 @RestController
 @RequestMapping("/compilations")
 @RequiredArgsConstructor
@@ -37,7 +35,7 @@ public class CompilationPublicController {
     }
 
     @GetMapping("/{compId}")
-    public CompilationDto findByIdCompilation(@PathVariable Integer compId) {
+    public CompilationDto findByIdCompilation(@PathVariable Long compId) {
         return compilationService.findByIdCompilation(compId);
     }
 }

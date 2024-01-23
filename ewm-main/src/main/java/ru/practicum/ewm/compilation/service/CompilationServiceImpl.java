@@ -37,11 +37,11 @@ public class CompilationServiceImpl implements CompilationService {
     @Transactional
     @Override
     public CompilationDto addCompilation(NewCompilationDto compilationDto) {
-        Compilation compilation = compilationMapper.toEntity(compilationDto);
+        Compilation compilation = compilationMapper.toCompilation(compilationDto);
         compilation.setPinned(Optional.ofNullable(compilation.getPinned()).orElse(false));
 
-        Set<Integer> compEventIds = (compilationDto.getEvents() != null) ? compilationDto.getEvents() : Collections.emptySet();
-        List<Integer> eventIds = new ArrayList<>(compEventIds);
+        Set<Long> compEventIds = (compilationDto.getEvents() != null) ? compilationDto.getEvents() : Collections.emptySet();
+        List<Long> eventIds = new ArrayList<>(compEventIds);
         List<Event> events = eventRepository.findAllByIdIn(eventIds);
         Set<Event> eventsSet = new HashSet<>(events);
         compilation.setEvents(eventsSet);
@@ -52,10 +52,10 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Transactional
     @Override
-    public CompilationDto updateCompilation(Integer compId, UpdateCompilationDto update) {
+    public CompilationDto updateCompilation(Long compId, UpdateCompilationDto update) {
         Compilation compilation = checkCompilation(compId);
 
-        Set<Integer> eventIds = update.getEvents();
+        Set<Long> eventIds = update.getEvents();
 
         if (eventIds != null) {
             List<Event> events = eventRepository.findAllByIdIn(new ArrayList<>(eventIds));
@@ -65,7 +65,7 @@ public class CompilationServiceImpl implements CompilationService {
 
         compilation.setPinned(Optional.ofNullable(update.getPinned()).orElse(compilation.getPinned()));
         if (compilation.getTitle().isBlank()) {
-            throw new ValidationException("Title не может состоять из пробелов");
+            throw new ValidationException("Title не может быть пустым");
         }
         compilation.setTitle(Optional.ofNullable(update.getTitle()).orElse(compilation.getTitle()));
 
@@ -74,7 +74,7 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Transactional
     @Override
-    public void deleteCompilation(Integer compId) {
+    public void deleteCompilation(Long compId) {
         checkCompilation(compId);
         compilationRepository.deleteById(compId);
     }
@@ -95,13 +95,12 @@ public class CompilationServiceImpl implements CompilationService {
                 .collect(Collectors.toList());
     }
 
-
     @Override
-    public CompilationDto findByIdCompilation(Integer compId) {
+    public CompilationDto findByIdCompilation(Long compId) {
         return compilationMapper.toDto(checkCompilation(compId));
     }
 
-    private Compilation checkCompilation(Integer compId) {
+    private Compilation checkCompilation(Long compId) {
         return compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException("Compilation с id = " + compId + " не найден"));
     }
