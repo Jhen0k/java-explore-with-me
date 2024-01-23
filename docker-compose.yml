@@ -8,9 +8,7 @@ services:
       - "9090:9090"
     depends_on:
       - stats-db
-      - ewm-service
     environment:
-      - EWM_MAIN_URL=http://ewm-service:8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/statistic
       - SPRING_DATASOURCE_USERNAME=user
       - SPRING_DATASOURCE_PASSWORD=pass
@@ -24,7 +22,6 @@ services:
       - POSTGRES_DB=statistic
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=pass
-      - JAVA_OPTS=-Djdk.httpclient.HttpClient.log=errors,requests
 
   ewm-service:
     build: ewm-main
