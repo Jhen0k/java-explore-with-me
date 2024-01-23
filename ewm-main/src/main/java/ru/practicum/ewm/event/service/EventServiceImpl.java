@@ -77,7 +77,7 @@ public class EventServiceImpl implements EventService {
 
     @NonFinal
     @Value("${server.application.name:ewm-service}")
-    private String applicationName;
+    private String applicationName = "ewm-service";
 
 
     @Override
