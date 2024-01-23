@@ -5,7 +5,6 @@ import ru.practicum.ewm.user.dto.UserDto;
 import ru.practicum.ewm.user.dto.UserShortDto;
 import ru.practicum.ewm.user.model.User;
 
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {
