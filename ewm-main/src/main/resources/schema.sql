@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS events
     participant_limit  INTEGER DEFAULT 0,
     published_on       TIMESTAMP WITHOUT TIME ZONE,
     request_moderation BOOLEAN,
-    state              varchar(200),
+    eventStatus              varchar(200),
     title              varchar(120),
     CONSTRAINT fk_events_to_category FOREIGN KEY (category_id) REFERENCES categories (id),
     CONSTRAINT fk_events_to_users FOREIGN KEY (initiator_id) REFERENCES users (id),
