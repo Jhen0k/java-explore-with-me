@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResponseStat {
 
-    String uri;
     String app;
+    String uri;
     Long hits;
 }
