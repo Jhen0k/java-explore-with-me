@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.RequestStatsDto;
 import ru.practicum.dto.ResponseStatsDto;
 import ru.practicum.ewm.exception.ValidTimeException;
@@ -26,12 +27,14 @@ public class StatServiceImpl implements StatService {
     HitMapper hitMapper;
 
 
+    @Transactional
     @Override
     public RequestStatsDto postStat(RequestStatsDto requestStatsDto) {
         Stat stat = hitMapper.toStatRequest(requestStatsDto);
         return hitMapper.toRequestStatDto(statRepository.save(stat));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ResponseStatsDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         checkValidTime(start, end);

@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
         return users.stream().map(userMapper::toUserDto).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User checkExistUser(long userId) {
         Optional<User> user = userRepository.findById(userId);
@@ -70,5 +71,4 @@ public class UserServiceImpl implements UserService {
             return user.get();
         }
     }
-
 }
