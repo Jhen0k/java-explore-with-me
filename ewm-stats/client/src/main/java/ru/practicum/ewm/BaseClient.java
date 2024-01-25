@@ -4,53 +4,55 @@ import org.springframework.http.*;
 import org.springframework.lang.Nullable;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-import ru.practicum.dto.HitDto;
+import ru.practicum.dto.RequestStatsDto;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 
-public abstract class BaseClient {
+public class BaseClient {
     protected final RestTemplate rest;
 
     public BaseClient(RestTemplate rest) {
         this.rest = rest;
     }
 
-    protected ResponseEntity<String> post(String path, HitDto body) {
-        return post(path, null, body);
+    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
+        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
-    protected ResponseEntity<String> post(String path, @Nullable Map<String, Object> parameters, HitDto body) {
-        return makeAndSendRequest(HttpMethod.POST, path, parameters, body);
+    protected <T> ResponseEntity<Object> post(String path, RequestStatsDto statsDto) {
+        return makeAndSendRequest(HttpMethod.POST, path,null, statsDto);
     }
 
-    private ResponseEntity<String> makeAndSendRequest(HttpMethod method, String path, @Nullable Map<String, Object> parameters, @Nullable HitDto body) {
-        HttpEntity<HitDto> requestEntity = new HttpEntity<>(body, defaultHeaders());
 
-        ResponseEntity<String> ewmServerResponse;
+    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method,
+                                                          String path,
+                                                          @Nullable Map<String, Object> parameters,
+                                                          @Nullable T body) {
+        HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
+
+        ResponseEntity<Object> statsServerResponse;
         try {
             if (parameters != null) {
-                ewmServerResponse = rest.exchange(path, method, requestEntity, String.class, parameters);
+                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
-                ewmServerResponse = rest.exchange(path, method, requestEntity, String.class);
+                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(Arrays.toString(e.getResponseBodyAsByteArray()));
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
         }
-        return prepareGatewayResponse(ewmServerResponse);
+        return prepareGatewayResponse(statsServerResponse);
     }
 
     private HttpHeaders defaultHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
         return headers;
     }
 
-    private static ResponseEntity<String> prepareGatewayResponse(ResponseEntity<String> response) {
+    private static ResponseEntity<Object> prepareGatewayResponse(ResponseEntity<Object> response) {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
         }

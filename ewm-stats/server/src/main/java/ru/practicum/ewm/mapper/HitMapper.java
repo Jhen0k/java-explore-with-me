@@ -1,17 +1,17 @@
 package ru.practicum.ewm.mapper;
 
 import org.mapstruct.Mapper;
-import ru.practicum.dto.HitDto;
-import ru.practicum.dto.NewHitDto;
-import ru.practicum.dto.StatDto;
-import ru.practicum.ewm.model.Hit;
+import ru.practicum.dto.RequestStatsDto;
+import ru.practicum.dto.ResponseStatsDto;
+import ru.practicum.ewm.model.ResponseStat;
+import ru.practicum.ewm.model.Stat;
 
 @Mapper(componentModel = "spring")
 public interface HitMapper {
 
-    NewHitDto toDto(Hit hit);
+    RequestStatsDto toRequestStatDto(Stat stat);
 
-    Hit toEntity(HitDto hitDto);
+    Stat toStatRequest(RequestStatsDto dto);
 
-    StatDto toStatDto(Hit hit);
+    ResponseStatsDto toResponseStatsDto(ResponseStat stat);
 }

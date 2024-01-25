@@ -1,4 +1,4 @@
-package ru.practicum.ewm.model;
+package ru.practicum.ewm.user.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,31 +13,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 
-
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "hits")
-public class Hit {
-
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-    @Column
-    String app;
-
-    @Column
-    String uri;
-
-    @Column
-    String ip;
-
-    @Column
-    LocalDateTime timestamp;
+    @Column(name = "name")
+    String name;
+    @Column(name = "email")
+    String email;
 }

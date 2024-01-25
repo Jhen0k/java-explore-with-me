@@ -1,15 +1,17 @@
 package ru.practicum.ewm.service;
 
-import ru.practicum.dto.HitDto;
-import ru.practicum.dto.NewHitDto;
-import ru.practicum.dto.StatDto;
+import ru.practicum.dto.RequestStatsDto;
+import ru.practicum.dto.ResponseStatsDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StatService {
 
-    NewHitDto createHit(HitDto hitDto);
+    RequestStatsDto postStat(RequestStatsDto requestStatsDto);
 
-    List<StatDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique);
+    List<ResponseStatsDto> getStats(LocalDateTime start,
+                                    LocalDateTime end,
+                                    List<String> uris,
+                                    boolean unique);
 }
