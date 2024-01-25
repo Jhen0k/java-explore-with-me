@@ -8,15 +8,15 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>ewm-responseStats</artifactId>
+    <artifactId>stats-service</artifactId>
     <packaging>pom</packaging>
 
-    <name>Explore With Me Statistic</name>
+    <name>stats</name>
 
     <modules>
-        <module>client</module>
-        <module>dto</module>
         <module>server</module>
+        <module>dto</module>
+        <module>client</module>
     </modules>
 
 </project>

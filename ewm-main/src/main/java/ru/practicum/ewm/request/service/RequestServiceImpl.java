@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.event.enums.EventStatus;
 import ru.practicum.ewm.event.enums.RequestStatus;
 import ru.practicum.ewm.event.model.Event;
@@ -31,6 +32,7 @@ public class RequestServiceImpl implements RequestService {
     UserService userService;
     EventService eventService;
 
+    @Transactional
     @Override
     public ParticipationRequestDto addNewRequest(Long userId, Long eventId) {
         User user = userService.checkExistUser(userId);
@@ -58,6 +60,7 @@ public class RequestServiceImpl implements RequestService {
         return RequestMapper.toParticipationRequestDto(request);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ParticipationRequestDto> getRequestsByUserId(Long userId) {
         userService.checkExistUser(userId);
@@ -66,6 +69,7 @@ public class RequestServiceImpl implements RequestService {
 
     }
 
+    @Transactional
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         userService.checkExistUser(userId);

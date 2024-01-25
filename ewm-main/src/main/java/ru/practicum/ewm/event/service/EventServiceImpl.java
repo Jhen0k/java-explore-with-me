@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.RequestStatsDto;
 import ru.practicum.dto.ResponseStatsDto;
 import ru.practicum.ewm.StatClient;
@@ -77,9 +78,10 @@ public class EventServiceImpl implements EventService {
 
     @NonFinal
     @Value("${server.application.name:ewm-service}")
-    private String applicationName = "ewm-service";
+    String applicationName;
 
 
+    @Transactional
     @Override
     public EventFullDto postEvent(Long userId, NewEventDto newEventDto) {
         LocalDateTime createOn = LocalDateTime.now();
@@ -111,6 +113,7 @@ public class EventServiceImpl implements EventService {
         return eventFullDto;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> getEventForOwner(long userId, int from, int size) {
         userService.checkExistUser(userId);
@@ -122,6 +125,7 @@ public class EventServiceImpl implements EventService {
         return events.stream().map(eventMapper::toEventShortDto).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EventFullDto getFullEventForOwner(long userId, long eventId) {
         userService.checkExistUser(userId);
@@ -133,6 +137,7 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toEventFullDto(event.get());
     }
 
+    @Transactional
     @Override
     public EventFullDto updateEventOwner(long userId, long eventId, UpdateEventUserRequest updateEventRequest) {
         userService.checkExistUser(userId);
@@ -164,6 +169,7 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toEventFullDto(eventRepository.save(eventUpdate));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventFullDto> getAllEventFromAdmin(ParamsSearchForAdmin params) {
         Pageable pageable = Paginator.getPageable(params.getFrom(), params.getSize());
@@ -208,6 +214,7 @@ public class EventServiceImpl implements EventService {
         return result;
     }
 
+    @Transactional
     @Override
     public EventFullDto updateEventFromAdmin(long eventId, UpdateEventAdminRequest inputEvent) {
         Event eventOld = checkExistEvent(eventId);
@@ -239,6 +246,7 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toEventFullDto(eventRepository.save(eventUpdate));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ParticipationRequestDto> getAllParticipationRequestsFromEventByOwner(Long userId, Long eventId) {
         userService.checkExistUser(userId);
@@ -258,6 +266,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    @Transactional
     @Override
     public EventRequestStatusUpdateResult updateStatusRequest(Long userId, Long eventId, EventRequestStatusUpdateRequest inputUpdate) {
         userService.checkExistUser(userId);
@@ -365,6 +374,7 @@ public class EventServiceImpl implements EventService {
         return caseUpdatedStatus;
     }
 
+    @Transactional
     @Override
     public Event checkExistEvent(long eventId) {
         Optional<Event> event = eventRepository.findById(eventId);
@@ -376,6 +386,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<EventShortDto> getAllEventFromPublic(SearchParamsForEvents searchParamsForEvents, HttpServletRequest request) {
 
@@ -456,15 +467,16 @@ public class EventServiceImpl implements EventService {
             });
 
             viewStatsMap = viewStatsList.stream()
-                    .filter(statsDto -> statsDto.getUri().startsWith("/events/"))
+                    .filter(responseStatsDto -> responseStatsDto.getUri().startsWith("/events/"))
                     .collect(Collectors.toMap(
-                            statsDto -> Long.parseLong(statsDto.getUri().substring("/events/".length())),
+                            responseStatsDto -> Long.parseLong(responseStatsDto.getUri().substring("/events/".length())),
                             ResponseStatsDto::getHits
                     ));
         }
         return viewStatsMap;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest request) {
         Event event = checkEvent(eventId);
@@ -483,6 +495,7 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("События с id = " + eventId + " не существует"));
     }
+
 
     private void addStatsClient(HttpServletRequest request) {
         statsClient.postStat(RequestStatsDto.builder()

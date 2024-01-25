@@ -20,7 +20,7 @@ public interface StatRepository extends JpaRepository<Stat, Long> {
             "ORDER BY COUNT(DISTINCT s.ip) DESC")
     List<ResponseStat> getStatByUrisAndTimeIsUnique(List<String> uri, LocalDateTime start, LocalDateTime end);
 
-    @Query("SELECT new ru.practicum.ewm.model.ResponseStat(s.app, s.uri, COUNT(s.ip)) " +
+    @Query("SELECT new ru.practicum.ewm.model.ResponseStat(s.uri, s.app, COUNT(s.ip)) " +
             "FROM Stat as s " +
             "WHERE  s.timestamp BETWEEN ?2 AND ?3 " +
             "AND (s.uri IN (?1) OR (?1) is NULL) " +

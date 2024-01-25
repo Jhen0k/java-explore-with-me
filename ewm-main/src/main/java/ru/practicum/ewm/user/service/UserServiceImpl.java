@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.paginator.Paginator;
 import ru.practicum.ewm.user.dto.UserDto;
@@ -26,6 +27,7 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     UserMapper userMapper;
 
+    @Transactional
     @Override
     public UserDto postUser(UserDto userDto) {
         User user = userMapper.toUser(userDto);
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toUserDto(userRepository.save(user));
     }
 
+    @Transactional
     @Override
     public void deleteUser(long userId) {
         try {
@@ -42,6 +45,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<UserDto> getUsers(List<Long> ids, int from, int size) {
         Pageable pageable = Paginator.getPageable(from, size);

@@ -9,7 +9,6 @@ import ru.practicum.dto.RequestStatsDto;
 import ru.practicum.dto.ResponseStatsDto;
 import ru.practicum.ewm.exception.ValidTimeException;
 import ru.practicum.ewm.mapper.HitMapper;
-import ru.practicum.ewm.mapper.StatListMapper;
 import ru.practicum.ewm.model.Stat;
 import ru.practicum.ewm.model.ResponseStat;
 import ru.practicum.ewm.repository.StatRepository;
@@ -25,7 +24,6 @@ public class StatServiceImpl implements StatService {
 
     StatRepository statRepository;
     HitMapper hitMapper;
-    StatListMapper statListMapper;
 
 
     @Override

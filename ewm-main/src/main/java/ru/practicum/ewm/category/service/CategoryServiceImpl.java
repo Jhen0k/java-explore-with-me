@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
 import ru.practicum.ewm.exception.NotFoundException;
@@ -26,6 +27,7 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
 
+    @Transactional
     @Override
     public CategoryDto postCategory(CategoryDto categoryDto) {
         Category category = categoryMapper.toCategory(categoryDto);
@@ -33,6 +35,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryDto(category);
     }
 
+    @Transactional
     @Override
     public void deleteCategory(long id) {
         try {
@@ -42,6 +45,7 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
+    @Transactional
     @Override
     public CategoryDto patchCategory(long id, CategoryDto categoryDto) {
         Category categoryUpdate = categoryMapper.toCategory(categoryDto);
@@ -57,6 +61,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryDto(categoryRepository.save(categoryUpdate));
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<CategoryDto> getCategories(int from, int size) {
         Pageable pageable = Paginator.getPageable(from, size);
@@ -65,6 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categories.stream().map(categoryMapper::toCategoryDto).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public CategoryDto getCategoryById(long catId) {
         Optional<Category> category = categoryRepository.findById(catId);
@@ -76,6 +82,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryDto(category.get());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Category checkExistCategory(long categoryId) {
         Optional<Category> category = categoryRepository.findById(categoryId);
