@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.ewm.category.dto.CategoryDto;
 import ru.practicum.ewm.category.mapper.CategoryMapper;
+import ru.practicum.ewm.category.validation.CategoryValidation;
 import ru.practicum.ewm.exception.NotFoundException;
 import ru.practicum.ewm.model.Category;
 import ru.practicum.ewm.paginator.Paginator;
 import ru.practicum.ewm.category.repository.CategoryRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class CategoryServiceImpl implements CategoryService {
 
     CategoryRepository categoryRepository;
+    CategoryValidation categoryValidation;
     CategoryMapper categoryMapper;
 
     @Transactional
@@ -37,25 +38,19 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Transactional
     @Override
-    public void deleteCategory(long id) {
+    public void deleteCategory(long catId) {
         try {
-            categoryRepository.deleteById(id);
+            categoryRepository.deleteById(catId);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("Category with id=" + id + " was not found");
+            throw new NotFoundException(String.format("Категория c id= %s не найдена", catId));
         }
     }
 
     @Transactional
     @Override
-    public CategoryDto patchCategory(long id, CategoryDto categoryDto) {
+    public CategoryDto patchCategory(long catId, CategoryDto categoryDto) {
         Category categoryUpdate = categoryMapper.toCategory(categoryDto);
-        Optional<Category> categoryOldOpt = categoryRepository.findById(id);
-
-        if (categoryOldOpt.isEmpty()) {
-            throw new NotFoundException("Category with id=" + id + "was not found");
-        }
-
-        Category categoryOld = categoryOldOpt.get();
+        Category categoryOld = categoryValidation.getCategoryAfterCheck(catId);
         categoryUpdate.setId(categoryOld.getId());
 
         return categoryMapper.toCategoryDto(categoryRepository.save(categoryUpdate));
@@ -73,24 +68,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional(readOnly = true)
     @Override
     public CategoryDto getCategoryById(long catId) {
-        Optional<Category> category = categoryRepository.findById(catId);
+        Category category = categoryValidation.getCategoryAfterCheck(catId);
 
-        if (category.isEmpty()) {
-            throw new NotFoundException("Category with id=" + catId + " was not found");
-        }
-
-        return categoryMapper.toCategoryDto(category.get());
+        return categoryMapper.toCategoryDto(category);
     }
 
-    @Transactional(readOnly = true)
     @Override
-    public Category checkExistCategory(long categoryId) {
-        Optional<Category> category = categoryRepository.findById(categoryId);
-
-        if (category.isEmpty()) {
-            throw new NotFoundException("Category with id=" + categoryId + " was not found");
-        } else {
-            return category.get();
-        }
+    public Category checkExistCategory(long catId) {
+        return categoryValidation.getCategoryAfterCheck(catId);
     }
 }
